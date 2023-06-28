@@ -17,27 +17,47 @@ function saveNotes(notes) {
 }
 
 function createNoteElement(id, content) {
-  const element = document.createElement("textarea");
+  const noteContainer = document.createElement("div");
+  noteContainer.classList.add("note-container");
 
-  element.classList.add("note");
-  element.value = content;
-  element.placeholder = "Empty Sticky Note";
+  const noteElement = document.createElement("textarea");
+  noteElement.classList.add("note");
+  noteElement.value = content;
+  noteElement.placeholder = "Empty Sticky Note";
 
-  element.addEventListener("change", () => {
-    updateNote(id, element.value);
+  noteElement.addEventListener("change", () => {
+    updateNote(id, noteElement.value);
   });
 
-  element.addEventListener("dblclick", () => {
-    const doDelete = confirm(
-      "Are you sure you wish to delete this sticky note?"
-    );
+  const deleteButton = document.createElement("button");
+  deleteButton.classList.add("delete-note");
+
+  const deleteIcon = document.createElement("i");
+  deleteIcon.classList.add("fas", "fa-trash-alt"); // Assuming you are using FontAwesome for the delete icon
+
+  deleteButton.appendChild(deleteIcon);
+
+  deleteButton.addEventListener("click", () => {
+    const doDelete = confirm("Are you sure you wish to delete this sticky note?");
 
     if (doDelete) {
-      deleteNote(id, element);
+      deleteNote(id, noteContainer);
     }
   });
 
-  return element;
+  noteContainer.appendChild(noteElement);
+  noteContainer.appendChild(deleteButton);
+
+  // Generate random bright color for the note
+  noteElement.style.backgroundColor = getRandomColor();
+
+  return noteContainer;
+}
+
+function getRandomColor() {
+  const colors = ["#FFFF99", "#99FF99", "#FF99CC", "#FFCC99"];
+  const randomIndex = Math.floor(Math.random() * colors.length);
+  return colors[randomIndex];
 }
 
 function addNote() {
